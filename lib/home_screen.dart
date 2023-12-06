@@ -30,6 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   String result = '';
   String speech = '';
+  String textFormFieldValue = '';
 
   @override
   void initState() {
@@ -67,11 +68,15 @@ class _HomeScreenState extends State<HomeScreen> {
               SlideInLeft(
                 child: TextFormField(
                   controller: TextEditingController(),
+                  onChanged: (value) {
+                    textFormFieldValue = value;
+                  },
                   onFieldSubmitted: (_) async {
                     setState(() {
                       isLoading = true;
                     });
-                    final result = await openAiService.isArtPromptAPI(TFF.text);
+                    final result =
+                        await openAiService.isArtPromptAPI(textFormFieldValue);
                     if (result.contains('https')) {
                       generatedImageUrl = result;
                       generatedContent = null;
@@ -82,6 +87,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     } else {
                       generatedImageUrl = null;
                       generatedContent = result;
+                      TFF.clear();
+                      isLoading = false;
                       await systemSpeak(result);
                       setState(() {});
                     }
@@ -92,8 +99,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         setState(() {
                           isLoading = true;
                         });
-                        result = await openAiService.isArtPromptAPI(TFF.text);
-                        print(TFF.text);
+                        result = await openAiService
+                            .isArtPromptAPI(textFormFieldValue);
+                        print('The Query You enter is ${textFormFieldValue}');
                         if (result.contains('https')) {
                           generatedImageUrl = result;
                           generatedContent = null;
@@ -101,6 +109,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         } else {
                           generatedImageUrl = null;
                           generatedContent = result;
+                          await systemSpeak(result);
+                          TFF.clear();
+                          isLoading = false;
                           setState(() {});
                         }
                       },
