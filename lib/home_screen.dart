@@ -26,9 +26,11 @@ class _HomeScreenState extends State<HomeScreen> {
   String? generatedContent;
   String? generatedImageUrl;
   var TFF = TextEditingController();
-  bool isLoading = false ;
-String result ='';
-String speech ='';
+  bool isLoading = false;
+
+  String result = '';
+  String speech = '';
+
   @override
   void initState() {
     _initSpeech();
@@ -66,44 +68,40 @@ String speech ='';
                 child: TextFormField(
                   controller: TextEditingController(),
                   onFieldSubmitted: (_) async {
-                   setState(() {
-                     isLoading=true ;
-                   });
+                    setState(() {
+                      isLoading = true;
+                    });
                     final result = await openAiService.isArtPromptAPI(TFF.text);
                     if (result.contains('https')) {
                       generatedImageUrl = result;
                       generatedContent = null;
                       setState(() {
-                        isLoading=false ;
+                        isLoading = false;
                         print(isLoading);
                       });
                     } else {
                       generatedImageUrl = null;
                       generatedContent = result;
                       await systemSpeak(result);
-                      setState(() {}
-                      );
+                      setState(() {});
                     }
                   },
                   decoration: InputDecoration(
                     suffixIcon: IconButton(
                       onPressed: () async {
-                       setState(() {
-                         isLoading = true ;
-                       });
+                        setState(() {
+                          isLoading = true;
+                        });
                         result = await openAiService.isArtPromptAPI(TFF.text);
                         print(TFF.text);
                         if (result.contains('https')) {
                           generatedImageUrl = result;
                           generatedContent = null;
-                          setState(() {
-                          });
+                          setState(() {});
                         } else {
                           generatedImageUrl = null;
                           generatedContent = result;
-                          setState(() {
-                          }
-                          );
+                          setState(() {});
                         }
                       },
                       icon: const Icon(
@@ -114,8 +112,11 @@ String speech ='';
                   ),
                 ),
               ),
-              if(isLoading ==true && result =='' )
-               const Center(child: CircularProgressIndicator(color: Pallete.firstSuggestionBoxColor,)),
+              if (isLoading == true && result == '')
+                const Center(
+                    child: CircularProgressIndicator(
+                  color: Pallete.firstSuggestionBoxColor,
+                )),
               const SizedBox(height: 20),
               if (generatedImageUrl == null && generatedContent == null)
                 SlideInLeft(
@@ -137,7 +138,7 @@ String speech ='';
             await startListening();
           } else if (speechToText.isListening) {
             setState(() {
-              isLoading = true ;
+              isLoading = true;
             });
             speech = await openAiService.isArtPromptAPI(lastWords);
 
